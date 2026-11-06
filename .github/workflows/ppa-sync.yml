@@ -1,0 +1,81 @@
+name: ppa-sync
+
+on:
+  schedule:
+    - cron: "41 3 * * *"          # daily, 03:41 UTC
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Only report what would be uploaded"
+        type: boolean
+        default: true
+      only:
+        description: "Only repos containing this string (e.g. lightcraft)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write                  # state/published.txt + heartbeat commit
+
+concurrency:
+  group: ppa-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-24.04
+    environment: launchpad         # secrets live here; restrict the environment to branch main
+    timeout-minutes: 300
+    env:
+      PPA: jokergermany/ppa
+      SERIES: noble
+      DEBFULLNAME: ${{ vars.DEBFULLNAME }}
+      DEBEMAIL: ${{ vars.DEBEMAIL }}
+      SIGN_KEY: ${{ vars.LP_SIGN_KEY_FPR }}
+      GH_TOKEN: ${{ github.token }}
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && '1' || '0' }}
+      ONLY: ${{ inputs.only }}
+    steps:
+      # No third-party actions: plain git checkout with the job token.
+      - name: Checkout
+        run: |
+          git clone --depth 1 "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" repo
+
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends \
+            devscripts debhelper dpkg-dev fakeroot xz-utils jq dput curl gnupg
+
+      - name: Import upload key
+        if: env.DRY_RUN != '1'
+        env:
+          LP_GPG_PRIVATE_KEY: ${{ secrets.LP_GPG_PRIVATE_KEY }}
+          LP_GPG_PASSPHRASE: ${{ secrets.LP_GPG_PASSPHRASE }}
+        run: |
+          export GNUPGHOME="$RUNNER_TEMP/gnupg"
+          install -d -m 700 "$GNUPGHOME"
+          printf '%s' "$LP_GPG_PRIVATE_KEY" | gpg --batch --import
+          printf '%s' "$LP_GPG_PASSPHRASE" > "$GNUPGHOME/pass"; chmod 600 "$GNUPGHOME/pass"
+          echo "GNUPGHOME=$GNUPGHOME" >> "$GITHUB_ENV"
+          echo "GPG_PASSFILE=$GNUPGHOME/pass" >> "$GITHUB_ENV"
+          gpg --list-secret-keys --keyid-format long "$SIGN_KEY" >/dev/null
+
+      - name: Sync
+        working-directory: repo
+        run: scripts/ppa-sync.sh
+
+      - name: Commit state (+ monthly heartbeat against the 60-day schedule shutdown)
+        if: always() && env.DRY_RUN != '1'
+        working-directory: repo
+        run: |
+          if [ "$(date -u +%d)" = "01" ]; then date -u +%FT%TZ > state/heartbeat.txt; fi
+          git add state/
+          git diff --cached --quiet && exit 0
+          git -c user.name="ppa-sync" -c user.email="ppa-sync@users.noreply.github.com" \
+              commit -m "Update PPA sync state"
+          git push
+
+      - name: Remove key
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/gnupg"
