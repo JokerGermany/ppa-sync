@@ -14,6 +14,15 @@ sudo add-apt-repository ppa:jokergermany/ppa
 sudo apt update && sudo apt install lightcraft
 ```
 
+## Migration to official repositories
+
+If an app gets an official apt repository, a final update from this PPA adds that
+repository and its signing key (fingerprint taken from upstream's own documentation)
+to your system, so updates continue directly from upstream. The app is then removed
+from this PPA. Planned migrations are listed here before they happen.
+
+Planned migrations: none yet.
+
 ## How it works
 
 `.github/workflows/ppa-sync.yml` runs daily. For every line in `apps-ppa.txt` it
