@@ -6,16 +6,17 @@
 storytold/pdfcraft         | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
 storytold/lightcraft         | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
 storytold/filmcraft          | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
-storytold/texturecraft       | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
-storytold/designcraft        | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
-storytold/wordcraft          | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
-storytold/vectorcraft        | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
-storytold/cadcraft           | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
-storytold/deckcraft          | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
+#storytold/texturecraft       | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
+#storytold/designcraft        | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
+#storytold/wordcraft          | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
+#storytold/vectorcraft        | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
+#storytold/cadcraft           | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
+#storytold/deckcraft          | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
 storytold/photocraft         | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
-storytold/effectcraft        | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
-storytold/figcraft           | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
-storytold/gridcraft          | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
+#storytold/effectcraft        | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
+#storytold/figcraft           | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
+#storytold/gridcraft          | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
 storytold/soundcraft         | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
-tangency-labs/solidcraft     | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
+storytold/artcraft           | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
+#tangency-labs/solidcraft     | MIT or Apache-2.0 | -linux-x86_64\.deb$ | required
 SchildiChat/schildi-revenge  | GPL-3.0           | amd64\.deb$         | optional
