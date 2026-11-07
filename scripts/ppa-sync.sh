@@ -78,7 +78,12 @@ while IFS= read -r line || [ -n "$line" ]; do
       uploaded+=("$s"); continue
     fi
     if ! debsign -p"$HERE/gpg-batch.sh" -k"$SIGN_KEY" "$CHANGES"; then ok=0; break; fi
-    if ! dput "ppa:$PPA" "$CHANGES"; then ok=0; break; fi
+    up=0
+    for try in 1 2 3; do
+      if dput -f "ppa:$PPA" "$CHANGES"; then up=1; break; fi
+      echo "dput attempt $try failed, retrying in 60 s"; sleep 60
+    done
+    if [ "$up" != 1 ]; then ok=0; break; fi
     uploaded+=("$s")
   done
 
