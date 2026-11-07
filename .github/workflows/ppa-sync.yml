@@ -65,6 +65,19 @@ jobs:
         working-directory: repo
         run: scripts/ppa-sync.sh
 
+      - name: Copy to other series + clean up old versions
+        if: env.DRY_RUN != '1'
+        working-directory: repo
+        env:
+          LP_CREDENTIALS: ${{ secrets.LP_CREDENTIALS }}
+        run: |
+          [ -n "$LP_CREDENTIALS" ] || { echo "LP_CREDENTIALS not set, skipping"; exit 0; }
+          sudo apt-get install -y -qq --no-install-recommends python3-launchpadlib
+          printf '%s' "$LP_CREDENTIALS" > "$RUNNER_TEMP/lp-creds"
+          trap 'rm -f "$RUNNER_TEMP/lp-creds"' EXIT
+          python3 scripts/ppa-copy-series.py --ppa "$PPA" --from-series noble --credentials "$RUNNER_TEMP/lp-creds" --apply
+          python3 scripts/ppa-cleanup.py --ppa "$PPA" --keep 1 --credentials "$RUNNER_TEMP/lp-creds" --apply
+
       - name: Commit state (+ monthly heartbeat against the 60-day schedule shutdown)
         if: always() && env.DRY_RUN != '1'
         working-directory: repo
