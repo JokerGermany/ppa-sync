@@ -19,3 +19,8 @@ storytold/filmcraft v0.19.0 0.19.0-1ppa1 2026-11-09
 storytold/soundcraft v0.19.0 0.19.0-1ppa1 2026-11-09
 storytold/pdfcraft v0.20.0 0.20.0-1ppa1 2026-11-10
 storytold/photocraft v0.22.0 0.22.0-1ppa1 2026-11-10
+storytold/pdfcraft v0.21.1 0.21.1-1ppa1 2026-11-13
+storytold/lightcraft v0.21.1 0.21.1-1ppa1 2026-11-13
+storytold/filmcraft v0.20.1 0.20.1-1ppa1 2026-11-13
+storytold/photocraft v0.23.1 0.23.1-1ppa1 2026-11-13
+storytold/soundcraft v0.20.1 0.20.1-1ppa1 2026-11-13
